@@ -1,0 +1,164 @@
+/* ---------- Page layout: title bar on top, terminal + cheat sheet below ---------- */
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  background: #0c0c0c;
+  color: #ffffff;
+  color-scheme: dark;
+  font: 13px/1.4 "Segoe UI", system-ui, sans-serif;
+}
+
+:focus-visible { outline: 2px solid #60cdff; outline-offset: -2px; }
+
+h2 { margin: 0 0 6px; font-size: 16px; }
+
+/* ---------- Title bar ---------- */
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding-left: 10px;
+  background: #2b2b2b;
+  user-select: none;
+}
+
+.icon {
+  width: 18px;
+  height: 16px;
+  border: 1px solid #9a9a9a;
+  background: #000000;
+  font: bold 7px/14px Consolas, monospace;
+  text-align: center;
+}
+
+#title { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+.titlebar button, #reset {
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid #555555;
+  border-radius: 3px;
+  background: #3a3a3a;
+  color: #ffffff;
+  font: inherit;
+  cursor: pointer;
+}
+.titlebar button:hover, #reset:hover { background: #4a4a4a; }
+
+.window-buttons span { display: inline-block; width: 44px; text-align: center; }
+
+/* ---------- Terminal ----------
+   script.js sets --bg, --fg, --font, --size, data-cursor and data-blink from the settings. */
+
+.body { position: relative; display: flex; flex: 1; min-height: 0; }
+
+#screen {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 4px 6px 24px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font), Consolas, "Courier New", monospace;
+  font-size: var(--size);
+  cursor: text;
+}
+
+#output, #line {
+  margin: 0;
+  font: inherit;
+  white-space: pre-wrap;        /* keep spaces and line breaks, wrap long lines */
+  overflow-wrap: anywhere;
+}
+
+#line { position: relative; }
+
+/* The real input: focusable but invisible. 16px stops phones zooming in when it gets focus. */
+#input {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1em;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+  font-size: 16px;
+}
+
+/* ---------- Cursor: three shapes, optional blinking ---------- */
+
+#cursor { box-shadow: inset 0 -0.2em 0 var(--fg); }                                   /* underscore */
+[data-cursor="bar"] #cursor { box-shadow: inset 2px 0 0 var(--fg); }
+[data-cursor="block"] #cursor { box-shadow: none; background: var(--fg); color: var(--bg); }
+
+[data-blink="true"]:focus-within #cursor { animation: blink 1s steps(1) infinite; }
+@keyframes blink {
+  50% { box-shadow: none; background: none; color: inherit; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-blink="true"]:focus-within #cursor { animation: none; }
+}
+
+/* ---------- Cheat sheet sidebar ---------- */
+
+#sheet {
+  width: 320px;
+  overflow-y: auto;
+  padding: 10px 10px 24px;
+  border-left: 1px solid #3a3a3a;
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
+#sheet[hidden] { display: none; }
+#sheet p { margin: 0 0 8px; color: #a0a0a0; }
+#sheet summary { padding: 6px 2px; border-top: 1px solid #333333; font-weight: 600; cursor: pointer; }
+#sheet .command { margin: 8px 0 2px; color: #a0a0a0; }
+#sheet .command b { color: #e6e6e6; }
+
+#sheet button {
+  display: block;
+  width: 100%;
+  margin: 2px 0;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 3px;
+  background: #2a2a2a;
+  color: #9cdcfe;
+  font: 13px Consolas, "Courier New", monospace;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+#sheet button:hover { background: #094771; color: #ffffff; }
+
+/* ---------- Settings panel (popover) ---------- */
+
+#settings {
+  inset: 40px 8px auto auto;     /* top-right corner, under the title bar */
+  width: 260px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid #555555;
+  border-radius: 6px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
+#settings label { display: flex; align-items: center; justify-content: space-between; margin: 8px 0; }
+#settings select, #settings input[type="range"] { width: 130px; font: inherit; }
+#reset { width: 100%; margin-top: 6px; }
+
+/* ---------- Small screens: the cheat sheet slides over the terminal ---------- */
+
+@media (max-width: 720px) {
+  #sheet { position: absolute; top: 0; right: 0; bottom: 0; width: min(320px, 88vw); }
+}

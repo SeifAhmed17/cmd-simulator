@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Command Prompt</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Title bar -->
+  <header class="titlebar">
+    <span class="icon" aria-hidden="true">C:\</span>
+    <span id="title">Command Prompt</span>
+    <button type="button" popovertarget="settings">Settings</button>
+    <button type="button" id="toggle-sheet" aria-expanded="true" aria-controls="sheet">Cheat Sheet</button>
+    <span class="window-buttons" aria-hidden="true"><span>&#x2500;</span><span>&#x2610;</span><span>&#x2715;</span></span>
+  </header>
+
+  <div class="body">
+
+    <!-- Terminal: #output is everything already printed, #line is the line being typed.
+         The real <input> is invisible; script.js copies its text into the spans so we can draw our own cursor. -->
+    <main id="screen">
+      <pre id="output" aria-live="polite"></pre>
+      <div id="line"><span id="prompt"></span><span id="before"></span><span id="cursor"> </span><span id="after"></span><input id="input" aria-label="Command input" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    </main>
+
+    <!-- Cheat sheet: the command list is filled in by script.js -->
+    <aside id="sheet" aria-label="Quick Reference Cheat Sheet">
+      <h2>Quick Reference Cheat Sheet</h2>
+      <p>Click any command to run it. Examples assume you are in C:\Users\Student &mdash; run <code>cd /d %USERPROFILE%</code> to get back there.</p>
+    </aside>
+
+  </div>
+
+  <!-- Settings panel: opened by the Settings button (HTML popover, no JavaScript needed to open or close it).
+       Each control's name is the setting it changes. -->
+  <div id="settings" popover aria-label="Settings">
+    <h2>Settings</h2>
+    <label>Theme
+      <select id="theme">
+        <option value="#0c0c0c,#cccccc">Classic CMD</option>
+        <option value="#0c0c0c,#16c60c">Matrix green</option>
+        <option value="#0037da,#f2f2f2">Blue (color 1F)</option>
+        <option value="#012456,#eeedf0">PowerShell</option>
+        <option value="#1a1200,#ffb000">Amber retro</option>
+        <option value="#300a24,#eeeeec">Ubuntu</option>
+        <option value="#f2f2f2,#0c0c0c">Light</option>
+      </select>
+    </label>
+    <label>Background <input type="color" name="background"></label>
+    <label>Text <input type="color" name="text"></label>
+    <label>Font
+      <select name="font">
+        <option value="Consolas">Consolas</option>
+        <option value='"Cascadia Mono"'>Cascadia Mono</option>
+        <option value='"Lucida Console"'>Lucida Console</option>
+        <option value='"Courier New"'>Courier New</option>
+      </select>
+    </label>
+    <label>Font size <input type="range" name="size" min="10" max="28"></label>
+    <label>Cursor
+      <select name="cursor">
+        <option value="underscore">Underscore _</option>
+        <option value="block">Block &#x2588;</option>
+        <option value="bar">Bar |</option>
+      </select>
+    </label>
+    <label>Blinking cursor <input type="checkbox" name="blink"></label>
+    <button type="button" id="reset">Reset to defaults</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
